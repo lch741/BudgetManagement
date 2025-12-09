@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace api.Models
 {
+    [Table("Transactions")]
     public class Transaction
     {
     public int Id { get; set; }
@@ -18,6 +20,8 @@ namespace api.Models
     public int CategoryId { get; set; }
     public Category? Category { get; set; }
     public TransactionType TransactionType { get; set; }
+    public required string AppUserId { get; set; }
+    public required AppUser AppUser { get; set; }
     }
 
     public enum TransactionType
