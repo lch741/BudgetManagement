@@ -16,7 +16,7 @@ namespace api.Models
     [DataType(DataType.Date)]
     [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
     public DateTime? Date { get; set; }
-    public required string Amount { get; set; }
+    public required decimal Amount { get; set; }
     public int CategoryId { get; set; }
     public Category? Category { get; set; }
     public TransactionType TransactionType { get; set; }
