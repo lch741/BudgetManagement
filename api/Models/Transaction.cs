@@ -15,10 +15,10 @@ namespace api.Models
 
     [DataType(DataType.Date)]
     [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-    public DateTime? Date { get; set; }
+    public required DateOnly Date { get; set; }
     public required decimal Amount { get; set; }
     public int CategoryId { get; set; }
-    public Category? Category { get; set; }
+    public required Category Category { get; set; }
     public TransactionType TransactionType { get; set; }
     public required string AppUserId { get; set; }
     public required AppUser AppUser { get; set; }
