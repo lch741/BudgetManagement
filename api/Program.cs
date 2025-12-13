@@ -1,4 +1,5 @@
 
+using api.AutoMapper;
 using api.Data;
 using api.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -56,6 +57,8 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
