@@ -1,7 +1,9 @@
 
 using api.AutoMapper;
 using api.Data;
+using api.Interfaces;
 using api.Models;
+using api.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -92,6 +94,9 @@ builder.Services.AddAuthentication(options =>
         ) 
     };
 });
+
+builder.Services.AddScoped<ICategoryRepository,CategoryRepository>();
+builder.Services.AddScoped<ITransactionRepository,TransactionRepository>();
 
 var app = builder.Build();
 

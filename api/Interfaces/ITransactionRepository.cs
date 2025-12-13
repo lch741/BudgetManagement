@@ -12,8 +12,8 @@ namespace api.Interfaces
     {
         Task<List<Transaction>>GetAllAsync(TransactionQueryObject TransactionQueryObject);
         Task<Transaction?>GetByIdAsync(int Id);
-        Task<Transaction>CreateAsync(CreateTransactionDto createTransactionDto);
+        Task<Transaction>CreateAsync(Transaction Transaction);
         Task<Transaction?>DeleteAsync(int Id);
-        Task<Transaction?>UpdateAsync(Transaction Transaction);
+        Task<Transaction?>UpdateAsync(int Id,UpdateTransactionDto UpdateTransactionDto);
     }
 }
