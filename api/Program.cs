@@ -4,6 +4,7 @@ using api.Data;
 using api.Interfaces;
 using api.Models;
 using api.Repositories;
+using api.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -97,6 +98,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<ICategoryRepository,CategoryRepository>();
 builder.Services.AddScoped<ITransactionRepository,TransactionRepository>();
+builder.Services.AddScoped<ITokenService,TokenService>();
 
 var app = builder.Build();
 
