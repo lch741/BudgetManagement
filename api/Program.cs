@@ -116,5 +116,6 @@ app.UseCors( x => x
     .SetIsOriginAllowed(origin => true)
 );
 app.MapControllers();
-app.Run();
+await app.RunAsync();
+
 
