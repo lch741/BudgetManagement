@@ -13,10 +13,16 @@ namespace api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CategoryController(ICategoryRepository CategoryRepository,IMapper mapper) : ControllerBase
+    public class CategoryController : ControllerBase
     {
-        private readonly ICategoryRepository _CategoryRepository = CategoryRepository;
-        private readonly IMapper _mapper = mapper;
+        private readonly ICategoryRepository _CategoryRepository;
+        private readonly IMapper _mapper;
+
+        public CategoryController(ICategoryRepository CategoryRepository,IMapper mapper)
+        {
+            _CategoryRepository = CategoryRepository;
+            _mapper = mapper;
+        }
 
         [HttpGet]
         [Authorize]
@@ -59,9 +65,9 @@ namespace api.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var category = mapper.Map<Category>(CreateCategoryDto);
+            var category = _mapper.Map<Category>(CreateCategoryDto);
             await _CategoryRepository.CreateAsync(category);
-            return CreatedAtAction(nameof(GetById),new{id = category.Id},mapper.Map<CategoryDto>(category));
+            return CreatedAtAction(nameof(GetById),new{id = category.Id},_mapper.Map<CategoryDto>(category));
         }
 
         [HttpPut]
@@ -81,7 +87,7 @@ namespace api.Controllers
                 return NotFound();
             }
 
-            return Ok(mapper.Map<CategoryDto>(update));
+            return Ok(_mapper.Map<CategoryDto>(update));
         }
 
         [HttpDelete]
