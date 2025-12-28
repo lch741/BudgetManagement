@@ -81,3 +81,5 @@ Thumbs.db
 # Others
 *.sqlite
 *.db
+api/budget.db-shm
+api/budget.db-wal
