@@ -22,10 +22,9 @@ namespace api.Repositories
             await _context.SaveChangesAsync();
             return Category;
         }
-
-        public async Task<Category?> DeleteAsync(int Id)
+        public async Task<Category?> DeleteAsync(AppUser user,int Id)
         {
-            var CategoryModel = await _context.Categorys.FindAsync(Id);
+            var CategoryModel = await _context.Categorys.FirstOrDefaultAsync(u=>u.AppUserId==user.Id&&u.Id==Id);
             if (CategoryModel==null)
             {
                 return null;
@@ -35,19 +34,19 @@ namespace api.Repositories
            return CategoryModel;
         }
 
-        public Task<List<Category>> GetAllAsync()
+        public Task<List<Category>> GetAllAsync(AppUser user)
         {
-            return _context.Categorys.ToListAsync();
+            return _context.Categorys.Where(u=>u.AppUserId==user.Id).ToListAsync();
         }
 
-        public async Task<Category?> GetByIdAsync(int Id)
+        public async Task<Category?> GetByIdAsync(AppUser user,int Id)
         {
-            return await _context.Categorys.FirstOrDefaultAsync(x => x.Id == Id);
+            return await _context.Categorys.FirstOrDefaultAsync(u=>u.AppUserId==user.Id&&u.Id==Id);
         }
 
-        public async Task<Category?> UpdateAsync(int Id,UpdateCategoryDto UpdateCategoryDto)
+        public async Task<Category?> UpdateAsync(AppUser user,int Id,UpdateCategoryDto UpdateCategoryDto)
         {
-            var CategoryModel = await _context.Categorys.FindAsync(Id);
+            var CategoryModel = await _context.Categorys.FirstOrDefaultAsync(u=>u.AppUserId==user.Id&&u.Id==Id);
             if (CategoryModel == null)
             {
                 return null;

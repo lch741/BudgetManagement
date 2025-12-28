@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using api.Dtos.Category;
 using api.Interfaces;
 using api.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -17,11 +19,13 @@ namespace api.Controllers
     {
         private readonly ICategoryRepository _CategoryRepository;
         private readonly IMapper _mapper;
+        private readonly UserManager<AppUser> _userManager;
 
-        public CategoryController(ICategoryRepository CategoryRepository,IMapper mapper)
+        public CategoryController(ICategoryRepository CategoryRepository,IMapper mapper,UserManager<AppUser> userManager)
         {
             _CategoryRepository = CategoryRepository;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -32,8 +36,13 @@ namespace api.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var categories = await _CategoryRepository.GetAllAsync();
+            var appuserid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (appuserid==null)
+            {
+                return Unauthorized();
+            }
+            var appuser = await _userManager.FindByIdAsync(appuserid);
+            var categories = await _CategoryRepository.GetAllAsync(appuser!);
             var categoryDtos = _mapper.Map<List<CategoryDto>>(categories);
             return Ok(categoryDtos);
         }
@@ -46,8 +55,13 @@ namespace api.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var category = await _CategoryRepository.GetByIdAsync(id);
+            var appuserid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (appuserid==null)
+            {
+                return Unauthorized();
+            }
+            var appuser = await _userManager.FindByIdAsync(appuserid);
+            var category = await _CategoryRepository.GetByIdAsync(appuser!,id);
             if (category == null)
             {
                 return NotFound();
@@ -65,7 +79,13 @@ namespace api.Controllers
             {
                 return BadRequest(ModelState);
             }
+            var appuserid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (appuserid==null)
+            {
+                return Unauthorized();
+            }
             var category = _mapper.Map<Category>(CreateCategoryDto);
+            category.AppUserId = appuserid;
             await _CategoryRepository.CreateAsync(category);
             return CreatedAtAction(nameof(GetById),new{id = category.Id},_mapper.Map<CategoryDto>(category));
         }
@@ -79,8 +99,13 @@ namespace api.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var update = await _CategoryRepository.UpdateAsync(id,UpdateCategoryDto);
+            var appuserid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (appuserid==null)
+            {
+                return Unauthorized();
+            }
+            var appuser = await _userManager.FindByIdAsync(appuserid);
+            var update = await _CategoryRepository.UpdateAsync(appuser!,id,UpdateCategoryDto);
 
             if (update==null)
             {
@@ -99,8 +124,13 @@ namespace api.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var delete = await _CategoryRepository.DeleteAsync(id);
+            var appuserid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (appuserid==null)
+            {
+                return Unauthorized();
+            }
+            var appuser = await _userManager.FindByIdAsync(appuserid);
+            var delete = await _CategoryRepository.DeleteAsync(appuser!,id);
 
             if (delete==null)
             {
