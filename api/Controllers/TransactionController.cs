@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using api.Dtos.Transaction;
 using api.Helpers;
@@ -8,6 +9,7 @@ using api.Interfaces;
 using api.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -18,11 +20,13 @@ namespace api.Controllers
     {
         private readonly ITransactionRepository _TransactionRepository;
         private readonly IMapper _mapper;
+        private readonly UserManager<AppUser> _userManager;
 
-        public TransactionController(ITransactionRepository TransactionRepository,IMapper mapper)
+        public TransactionController(ITransactionRepository TransactionRepository,IMapper mapper,UserManager<AppUser> userManager)
         {
             _TransactionRepository = TransactionRepository;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -33,8 +37,13 @@ namespace api.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var transactions = await _TransactionRepository.GetAllAsync(TransactionQueryObject);
+            var appuserid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (appuserid==null)
+            {
+                return Unauthorized();
+            }
+            var appuser = await _userManager.FindByIdAsync(appuserid);
+            var transactions = await _TransactionRepository.GetAllAsync(appuser!,TransactionQueryObject);
             var transactionDtos = _mapper.Map<List<TransactionDto>>(transactions);
             return Ok(transactionDtos);
         }
@@ -47,8 +56,13 @@ namespace api.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var transaction = await  _TransactionRepository.GetByIdAsync(id);
+            var appuserid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (appuserid==null)
+            {
+                return Unauthorized();
+            }
+            var appuser = await _userManager.FindByIdAsync(appuserid);
+            var transaction = await  _TransactionRepository.GetByIdAsync(appuser!,id);
             if (transaction == null)
             {
                 return NotFound();
@@ -66,7 +80,13 @@ namespace api.Controllers
             {
                 return BadRequest(ModelState);
             }
+            var appuser = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (appuser==null)
+            {
+                return Unauthorized();
+            }
             var transaction = _mapper.Map<Transaction>(CreateTransactionDto);
+            transaction.AppUserId = appuser;
             await _TransactionRepository.CreateAsync(transaction);
             return CreatedAtAction(nameof(GetById),new{id = transaction.Id},_mapper.Map<TransactionDto>(transaction));
         }
@@ -80,8 +100,13 @@ namespace api.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var update = await _TransactionRepository.UpdateAsync(id,UpdateTransactionDto);
+            var appuserid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (appuserid==null)
+            {
+                return Unauthorized();
+            }
+            var appuser = await _userManager.FindByIdAsync(appuserid);
+            var update = await _TransactionRepository.UpdateAsync(appuser!,id,UpdateTransactionDto);
 
             if (update==null)
             {
@@ -100,8 +125,13 @@ namespace api.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var delete = await _TransactionRepository.DeleteAsync(id);
+            var appuserid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (appuserid==null)
+            {
+                return Unauthorized();
+            }
+            var appuser = await _userManager.FindByIdAsync(appuserid);
+            var delete = await _TransactionRepository.DeleteAsync(appuser!,id);
 
             if (delete==null)
             {

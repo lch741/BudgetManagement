@@ -15,7 +15,7 @@ namespace api.AutoMapper
             CreateMap<Category, CategoryDto>();
             CreateMap<CreateCategoryDto, Category>();
             CreateMap<Transaction, TransactionDto>().ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
-            CreateMap<CreateTransactionDto, Transaction>();
+            CreateMap<CreateTransactionDto, Transaction>().ForMember(dest => dest.AppUser, opt => opt.Ignore());
         }
     }
 }

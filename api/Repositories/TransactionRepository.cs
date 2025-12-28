@@ -22,9 +22,9 @@ namespace api.Repositories
             return Transaction;
         }
 
-        public async Task<Transaction?> DeleteAsync(int Id)
+        public async Task<Transaction?> DeleteAsync(AppUser user,int Id)
         {
-            var TransactionModel = await _context.Transactions.FindAsync(Id);
+            var TransactionModel = await _context.Transactions.FirstOrDefaultAsync(u=>u.AppUserId==user.Id&&u.Id==Id);
             if (TransactionModel == null)
             {
                 return null;
@@ -34,9 +34,9 @@ namespace api.Repositories
             return TransactionModel;
         }
 
-        public async Task<List<Transaction>> GetAllAsync(TransactionQueryObject TransactionQueryObject)
+        public async Task<List<Transaction>> GetAllAsync(AppUser user,TransactionQueryObject TransactionQueryObject)
         {
-            var Transactions = _context.Transactions.AsQueryable();
+            var Transactions = _context.Transactions.Where(u=>u.AppUserId==user.Id).AsQueryable();
             if (!string.IsNullOrWhiteSpace(TransactionQueryObject.Name))
             {
                 Transactions = Transactions.Where(x=>x.Name.Contains(TransactionQueryObject.Name));
@@ -84,9 +84,9 @@ namespace api.Repositories
             return await Transactions.ToListAsync();
         }
 
-        public async Task<Transaction?> GetByIdAsync(int Id)
+        public async Task<Transaction?> GetByIdAsync(AppUser user,int Id)
         {
-            var TransactionModel = await _context.Transactions.FindAsync(Id);
+            var TransactionModel = await _context.Transactions.FirstOrDefaultAsync(u=>u.AppUserId==user.Id&&u.Id==Id);
             if (TransactionModel == null)
             {
                 return null;
@@ -94,14 +94,18 @@ namespace api.Repositories
             return TransactionModel;
         }
 
-        public async Task<Transaction?> UpdateAsync(int Id,UpdateTransactionDto UpdateTransactionDto)
+        public async Task<Transaction?> UpdateAsync(AppUser user,int Id,UpdateTransactionDto UpdateTransactionDto)
         {
-            var TransactionModel = await _context.Transactions.FindAsync(Id);
+            var TransactionModel = await _context.Transactions.FirstOrDefaultAsync(u=>u.AppUserId==user.Id&&u.Id==Id);
             if (TransactionModel == null)
             {
                 return null;
             }
-            _context.Entry(TransactionModel).CurrentValues.SetValues(UpdateTransactionDto);
+            TransactionModel.Name = UpdateTransactionDto.Name;
+            TransactionModel.Date = UpdateTransactionDto.Date;
+            TransactionModel.Amount = UpdateTransactionDto.Amount;
+            TransactionModel.CategoryId = UpdateTransactionDto.CategoryId;
+            TransactionModel.TransactionType = UpdateTransactionDto.TransactionType;
             await _context.SaveChangesAsync();
             return TransactionModel;
         }

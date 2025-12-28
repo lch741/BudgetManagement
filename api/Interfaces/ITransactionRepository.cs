@@ -10,10 +10,10 @@ namespace api.Interfaces
 {
     public interface ITransactionRepository
     {
-        Task<List<Transaction>>GetAllAsync(TransactionQueryObject TransactionQueryObject);
-        Task<Transaction?>GetByIdAsync(int Id);
+        Task<List<Transaction>>GetAllAsync(AppUser user,TransactionQueryObject TransactionQueryObject);
+        Task<Transaction?>GetByIdAsync(AppUser user,int Id);
         Task<Transaction>CreateAsync(Transaction Transaction);
-        Task<Transaction?>DeleteAsync(int Id);
-        Task<Transaction?>UpdateAsync(int Id,UpdateTransactionDto UpdateTransactionDto);
+        Task<Transaction?>DeleteAsync(AppUser user,int Id);
+        Task<Transaction?>UpdateAsync(AppUser user,int Id,UpdateTransactionDto UpdateTransactionDto);
     }
 }
