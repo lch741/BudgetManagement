@@ -13,11 +13,17 @@ namespace api.Controllers
 {
     [ApiController]
     [Route("api/account")]
-    public class AccountController(ITokenService tokenService,UserManager<AppUser> UserManager,SignInManager<AppUser> SignInManager) : ControllerBase
+    public class AccountController : ControllerBase
     {
-        private readonly UserManager<AppUser> _UserManager = UserManager;
-        private readonly SignInManager<AppUser> _SignInManager = SignInManager;
-        private readonly ITokenService _tokenService = tokenService;
+        private readonly UserManager<AppUser> _UserManager;
+        private readonly SignInManager<AppUser> _SignInManager;
+        private readonly ITokenService _tokenService;
+        public AccountController(UserManager<AppUser> userManager,ITokenService tokenService,SignInManager<AppUser> signinManager)
+        {
+            _UserManager = userManager;
+            _tokenService = tokenService;
+            _SignInManager = signinManager;
+        }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]RegisterDto RegisterDto)
