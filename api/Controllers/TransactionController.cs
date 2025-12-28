@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using api.Data;
 using api.Dtos.Transaction;
 using api.Helpers;
 using api.Interfaces;
@@ -11,6 +12,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SQLitePCL;
 
 namespace api.Controllers
 {
@@ -21,12 +23,13 @@ namespace api.Controllers
         private readonly ITransactionRepository _TransactionRepository;
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
-
-        public TransactionController(ITransactionRepository TransactionRepository,IMapper mapper,UserManager<AppUser> userManager)
+        private readonly ApplicationDBContext _context;
+        public TransactionController(ITransactionRepository TransactionRepository,IMapper mapper,UserManager<AppUser> userManager,ApplicationDBContext context)
         {
             _TransactionRepository = TransactionRepository;
             _mapper = mapper;
             _userManager = userManager;
+            _context = context;
         }
 
         [HttpGet]
@@ -88,6 +91,7 @@ namespace api.Controllers
             var transaction = _mapper.Map<Transaction>(CreateTransactionDto);
             transaction.AppUserId = appuser;
             await _TransactionRepository.CreateAsync(transaction);
+            await _context.Entry(transaction).Reference(t => t.Category).LoadAsync();
             return CreatedAtAction(nameof(GetById),new{id = transaction.Id},_mapper.Map<TransactionDto>(transaction));
         }
 

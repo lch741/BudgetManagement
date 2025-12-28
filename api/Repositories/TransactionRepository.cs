@@ -36,7 +36,7 @@ namespace api.Repositories
 
         public async Task<List<Transaction>> GetAllAsync(AppUser user,TransactionQueryObject TransactionQueryObject)
         {
-            var Transactions = _context.Transactions.Where(u=>u.AppUserId==user.Id).AsQueryable();
+            var Transactions = _context.Transactions.Where(u=>u.AppUserId==user.Id).Include(u=>u.Category).AsQueryable();
             if (!string.IsNullOrWhiteSpace(TransactionQueryObject.Name))
             {
                 Transactions = Transactions.Where(x=>x.Name.Contains(TransactionQueryObject.Name));
@@ -86,7 +86,7 @@ namespace api.Repositories
 
         public async Task<Transaction?> GetByIdAsync(AppUser user,int Id)
         {
-            var TransactionModel = await _context.Transactions.FirstOrDefaultAsync(u=>u.AppUserId==user.Id&&u.Id==Id);
+            var TransactionModel = await _context.Transactions.Include(u=>u.Category).FirstOrDefaultAsync(u=>u.AppUserId==user.Id&&u.Id==Id);
             if (TransactionModel == null)
             {
                 return null;
@@ -96,7 +96,7 @@ namespace api.Repositories
 
         public async Task<Transaction?> UpdateAsync(AppUser user,int Id,UpdateTransactionDto UpdateTransactionDto)
         {
-            var TransactionModel = await _context.Transactions.FirstOrDefaultAsync(u=>u.AppUserId==user.Id&&u.Id==Id);
+            var TransactionModel = await _context.Transactions.Include(u=>u.Category).FirstOrDefaultAsync(u=>u.AppUserId==user.Id&&u.Id==Id);
             if (TransactionModel == null)
             {
                 return null;
