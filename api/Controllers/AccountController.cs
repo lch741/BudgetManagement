@@ -19,7 +19,7 @@ namespace api.Controllers
         private readonly SignInManager<AppUser> _SignInManager = SignInManager;
         private readonly ITokenService _tokenService = tokenService;
 
-        [HttpPost("api/register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]RegisterDto RegisterDto)
         {
             try
@@ -65,7 +65,7 @@ namespace api.Controllers
             }
         }
 
-        [HttpPost("api/login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody]LoginDto LoginDto)
         {
             if (!ModelState.IsValid)
