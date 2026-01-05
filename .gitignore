@@ -62,7 +62,7 @@ build/
 coverage/
 *.lcov
 
-# Git filter repo leftover (你刚执行过)
+# Git filter repo leftover
 .git-rewrite/
 .git-filter-repo/
 
@@ -83,3 +83,28 @@ Thumbs.db
 *.db
 api/budget.db-shm
 api/budget.db-wal
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
