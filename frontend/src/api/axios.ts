@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useAuthStore } from "../stores/auth";
 import { useToast } from "vue-toastification"; 
+import { useAuthStore } from "../stores/auth.store";
 
 const api = axios.create({
   baseURL: 'http://localhost:5067/api',

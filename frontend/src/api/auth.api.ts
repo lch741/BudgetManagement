@@ -1,7 +1,7 @@
 import axios from "axios";
-import { useAuthStore } from "../stores/auth";
 import { useToast } from "vue-toastification"; 
 import api from './axios'
+import type { AuthResponse, LoginRequest, RegisterRequest } from "../types/auth";
 
 export interface LoginResponse{
     Username:string,
@@ -9,17 +9,14 @@ export interface LoginResponse{
     Token:string
 }
 
-export function logginApi(Username:string,Password:string){
-    return api.post<LoginResponse>('/account/login',{
-        Username,
-        Password
+export function logginApi(data:LoginRequest){
+    return api.post<AuthResponse>('/account/login',{
+        data
     })
 }
 
-export function registerApi(Username:string,Password:string,Email:string){
-    return api.post<LoginResponse>('/account/register',{
-        Username,
-        Email,
-        Password
+export function registerApi(data:RegisterRequest){
+    return api.post<AuthResponse>('/account/register',{
+        data
     })
 }

@@ -1,9 +1,11 @@
 import {defineStore} from 'pinia';
 import { ref,computed } from 'vue'
+import type { LoginRequest,User } from '../types/auth';
+import { logginApi } from '../api/auth.api';
 
 export const useAuthStore = defineStore('auth', () => {
     const token = ref<string|null>(null)
-    const user = ref<string|null>(null)
+    const user = ref<User|null>(null)
 
     const isLoggedIn = computed(()=>!!user.value)
 
@@ -12,15 +14,19 @@ export const useAuthStore = defineStore('auth', () => {
         const u = localStorage.getItem('user')
         if (t && u){
             token.value = t
-            user.value = u
+            user.value = JSON.parse(u)
         }
     }
 
-    function login(tokenValue:string,userValue:string){
-        token.value = tokenValue
-        user.value = userValue
-        localStorage.setItem('token',tokenValue)
-        localStorage.setItem('user',tokenValue)
+    async function login(data:LoginRequest){
+        const res = await logginApi(data)
+        token.value = res.data.Token
+        user.value = {
+            Username:res.data.Username,
+            Email:res.data.Email
+        }
+        localStorage.setItem('token',token.value);
+        localStorage.setItem('user',JSON.stringify(user.value));
     }
 
     function logout(){
