@@ -3,12 +3,6 @@ import { useToast } from "vue-toastification";
 import api from './axios'
 import type { AuthResponse, LoginRequest, RegisterRequest } from "../types/auth";
 
-export interface LoginResponse{
-    Username:string,
-    Email:string,
-    Token:string
-}
-
 export function logginApi(data:LoginRequest){
     return api.post<AuthResponse>('/account/login',{
         data
