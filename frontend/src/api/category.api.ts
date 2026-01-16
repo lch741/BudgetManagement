@@ -1,8 +1,5 @@
-import axios from "axios";
-import { useToast } from "vue-toastification"; 
 import api from './axios'
 import type { Category } from "../types/category";
-import type { List } from "postcss/lib/list";
 
 
 export function getCategories(){
