@@ -16,3 +16,16 @@ export interface CreateTransaction{
     CategoryId:number
     TransactionType:TransactionType
 } 
+
+export interface TransactionQuery
+{
+    Name?:string
+    TransactionType?:TransactionType
+    CategoryId?:number
+    StartDate?:string
+    EndDate?:string
+    MinAmount?:number
+    MaxAmount?:number
+    IsDescendingBydate?:boolean
+    IsDescendingByamount?:boolean
+}
