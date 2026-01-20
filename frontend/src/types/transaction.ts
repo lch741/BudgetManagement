@@ -1,31 +1,31 @@
-export type TransactionType = 0 | 1
+export type TransactionType = 1 | 2
 
 export interface Transaction{
-    Id:number
-    Name:string
-    Date:string
-    Amount:number
-    CategoryName:string
-    TransactionType:TransactionType
+  id: number
+  name: string
+  date: string
+  amount: number
+  categoryName: string
+  transactionType: TransactionType
 } 
 
 export interface CreateTransaction{
-    Name:string
-    Date:string
-    Amount:number
-    CategoryId:number
-    TransactionType:TransactionType
+  name: string
+  date: string
+  amount: number
+  categoryId: number
+  transactionType: TransactionType
 } 
 
 export interface TransactionQuery
 {
-    Name?:string
-    TransactionType?:TransactionType
-    CategoryId?:number
-    StartDate?:string
-    EndDate?:string
-    MinAmount?:number
-    MaxAmount?:number
-    IsDescendingBydate?:boolean
-    IsDescendingByamount?:boolean
+  name?: string
+  transactionType?: TransactionType
+  categoryId?: number
+  startDate?: string
+  endDate?: string
+  minAmount?: number
+  maxAmount?: number
+  isDescendingByDate?: boolean
+  isDescendingByAmount?: boolean
 }

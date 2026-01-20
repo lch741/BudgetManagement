@@ -22,8 +22,8 @@ export const useAuthStore = defineStore('auth', () => {
         const res = await logginApi(data)
         token.value = res.data.token
         user.value = {
-            Username:res.data.username,
-            Email:res.data.email
+            username:res.data.username,
+            email:res.data.email
         }
         localStorage.setItem('token',token.value);
         localStorage.setItem('user',JSON.stringify(user.value));
