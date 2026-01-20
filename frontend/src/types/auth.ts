@@ -16,7 +16,7 @@ export interface User{
 }
 
 export interface AuthResponse {
-  Username: string
-  Email: string
-  Token: string
+  username: string
+  email: string
+  token: string
 }
