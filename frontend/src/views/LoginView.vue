@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth.store';
+import { useToast } from 'vue-toastification';
 
 
 const Username = ref('')
@@ -9,10 +10,11 @@ const Password = ref('')
 const loading = ref(false)
 const router = useRouter()
 const authStore = useAuthStore()
+const toast = useToast();
 
 const handleLogin = async() =>{
     if(!Username.value||!Password.value){
-        alert('Please enter username and password')
+        toast.warning('Please enter username and password')
         return
     }
     try{
