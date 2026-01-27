@@ -35,15 +35,41 @@ const handleLogin = async() =>{
 </script>
 
 <template>
-    <div class="login">
-        <h1>Login</h1>
+    <div class="min-h-screen flex items-center justify-center bg-gray-100">
+        <div class="w-full max-w-md bg-white p-8 rounded-lg shadow">  
+            <h1 class="text-2xl font-bold text-center mb-6">
+                Login
+            </h1>
 
-        <input v-model="Username" placeholder="Username"/>
-        <input v-model="Password" type="Password" placeholder="Password"/>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Username
+                    <input v-model="Username" 
+                    type="text"
+                    class="w-full border border-gray-300 rounded px-3 py-2
+                           focus:outline-none focus:ring-2 focus:ring-blue-500"   
+                    placeholder="Enter username"/>
+                </label>
+            </div>
 
-        <button :disabled = "loading" @click ="handleLogin" >
-            {{loading?'Loggin in ...':'Login'}}
-        </button>
+            <div class="mb-6">
+                <label class="block text-sm font-medium mb-1">Password
+                    <input v-model="Password" 
+                    type="Password"
+                    class="w-full border border-gray-300 rounded px-3 py-2
+                           focus:outline-none focus:ring-2 focus:ring-blue-500"   
+                    placeholder="Enter Password"/>
+                </label>
+            </div>
 
+            <button 
+            :disabled = "loading" 
+            @click ="handleLogin" 
+            calss="w-full bg-blue-600 text-white py-2 rounded 
+                   hover:bg-blue-700 transition
+                   disabled:opacity-50 disabled:cursor-not-allowed">
+                {{loading?'Loggin in ...':'Login'}}
+            </button>
+            
+        </div>
     </div>
 </template>
