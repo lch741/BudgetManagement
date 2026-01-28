@@ -9,25 +9,25 @@ const routes = [
         name:'login',
         component:LoginView,
     },
-    {
-        path:'/',
-        redirect:'/transactions',
-        meta:{requireAuth:true},
-        children:[
-            {
-            path:'transactions',
-            name:'transactions',
-            component:TransactionsView,
-            meta:{requireAuth:true},
-            },
-            {
-            path:'categories',
-            name:'categories',
-            component:CategoriesView,
-            meta:{requireAuth:true},
-            },
-        ]
-    }
+    //{
+        //path:'/',
+        //redirect:'/transactions',
+        //meta:{requireAuth:true},
+        //children:[
+            //{
+            //path:'transactions',
+            //name:'transactions',
+            //component:TransactionsView,
+            //meta:{requireAuth:true},
+            //},
+            //{
+            //path:'categories',
+            //name:'categories',
+            //component:CategoriesView,
+            //meta:{requireAuth:true},
+            //},
+        //]
+    //}
 ]
 
 const router = createRouter({
