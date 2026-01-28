@@ -35,7 +35,7 @@ const handleLogin = async() =>{
 </script>
 
 <template>
-    <div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center bg-gray-400">
         <div class="w-full max-w-md bg-white p-8 rounded-lg shadow">  
             <h1 class="text-2xl font-bold text-center mb-6">
                 Login
