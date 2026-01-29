@@ -1,7 +1,7 @@
 import {defineStore} from 'pinia';
 import { ref,computed } from 'vue'
-import type { LoginRequest,User } from '../types/auth';
-import { logginApi } from '../api/auth.api';
+import type { LoginRequest,RegisterRequest,User } from '../types/auth';
+import { logginApi, registerApi } from '../api/auth.api';
 import { useToast } from 'vue-toastification';
 
 const toast = useToast();
@@ -37,6 +37,23 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
+    async function register(data:RegisterRequest){
+        try{
+            const res = await registerApi(data)
+            token.value = res.data.token
+            user.value = {
+                username:res.data.username,
+                email:res.data.email
+            }
+            localStorage.setItem('token',token.value);
+            localStorage.setItem('user',JSON.stringify(user.value));
+            toast.success('Welcome')
+        }catch (err) {
+            toast.error('Invalid username, password or email')
+            throw err
+        }
+    }
+
     function logout(){
         token.value = null
         user.value = null
@@ -44,5 +61,5 @@ export const useAuthStore = defineStore('auth', () => {
         toast.info('Logged out')
     }
 
-    return {token, user, isLoggedIn, login, logout, init}
+    return {token, user, isLoggedIn, login, logout,register, init}
 })

@@ -1,0 +1,87 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/auth.store';
+import { useToast } from 'vue-toastification';
+
+
+const Username = ref('')
+const Password = ref('')
+const Email = ref('')
+const loading = ref(false)
+const router = useRouter()
+const authStore = useAuthStore()
+const toast = useToast();
+
+const handleRegister = async() =>{
+    if(!Username.value||!Password.value||!Email.value){
+        toast.warning('Please enter all imformations')
+        return
+    }
+    try{
+        loading.value = true
+
+        await authStore.register({
+            username:Username.value,
+            email: Email.value,
+            password:Password.value
+        })
+
+        router.push('/')
+    } catch(err){
+        console.error(err)
+    } finally{
+        loading.value = false
+    }
+}
+</script>
+
+<template>
+    <div class="min-h-screen flex items-center justify-center bg-gray-400">
+        <div class="w-full max-w-md bg-white p-8 rounded-lg shadow">  
+            <h1 class="text-2xl font-bold text-center mb-6">
+                Login
+            </h1>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Username
+                    <input v-model="Username" 
+                    type="text"
+                    class="w-full border border-gray-300 rounded px-3 py-2
+                           focus:outline-none focus:ring-2 focus:ring-blue-500"   
+                    placeholder="Enter username"/>
+                </label>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Email
+                    <input v-model="Email" 
+                    type="text"
+                    class="w-full border border-gray-300 rounded px-3 py-2
+                           focus:outline-none focus:ring-2 focus:ring-blue-500"   
+                    placeholder="Enter username"/>
+                </label>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium mb-1">Password
+                    <input v-model="Password" 
+                    type="Password"
+                    class="w-full border border-gray-300 rounded px-3 py-2
+                           focus:outline-none focus:ring-2 focus:ring-blue-500"   
+                    placeholder="Enter Password"/>
+                </label>
+            </div>
+
+            <button 
+            :disabled = "loading" 
+            @click ="handleRegister" 
+            calss="w-full bg-blue-600 text-white py-2 rounded 
+                   hover:bg-blue-700 transition
+                   disabled:opacity-50 disabled:cursor-not-allowed">
+                {{loading?'Registering ...':'Register'}}
+            </button>
+            
+        </div>
+    </div>
+</template>
