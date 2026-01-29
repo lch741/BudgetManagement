@@ -64,12 +64,19 @@ const handleLogin = async() =>{
             <button 
             :disabled = "loading" 
             @click ="handleLogin" 
-            calss="w-full bg-blue-600 text-white py-2 rounded 
-                   hover:bg-blue-700 transition
+            class="block mt-4 w-full text-center border border-red-600
+                   text-red-600 py-2 rounded hover:bg-red-50 transition
                    disabled:opacity-50 disabled:cursor-not-allowed">
                 {{loading?'Loggin in ...':'Login'}}
             </button>
             
+            <router-link 
+                to="/register"
+                class="block mt-4 w-full text-center border border-blue-600
+                       text-blue-600 py-2 rounded hover:bg-blue-50 transition"
+            >
+                Register
+            </router-link>
         </div>
     </div>
 </template>

@@ -40,7 +40,7 @@ const handleRegister = async() =>{
     <div class="min-h-screen flex items-center justify-center bg-gray-400">
         <div class="w-full max-w-md bg-white p-8 rounded-lg shadow">  
             <h1 class="text-2xl font-bold text-center mb-6">
-                Login
+                Register
             </h1>
 
             <div class="mb-4">
@@ -76,12 +76,19 @@ const handleRegister = async() =>{
             <button 
             :disabled = "loading" 
             @click ="handleRegister" 
-            calss="w-full bg-blue-600 text-white py-2 rounded 
-                   hover:bg-blue-700 transition
+            class="block mt-4 w-full text-center border border-red-600
+                   text-red-600 py-2 rounded hover:bg-red-50 transition
                    disabled:opacity-50 disabled:cursor-not-allowed">
                 {{loading?'Registering ...':'Register'}}
             </button>
-            
+
+            <router-link 
+                to="/login"
+                class="block mt-4 w-full text-center border border-blue-600
+                       text-blue-600 py-2 rounded hover:bg-blue-50 transition"
+            >
+                Login
+            </router-link>
         </div>
     </div>
 </template>
