@@ -2,6 +2,7 @@ import { createRouter,createWebHistory } from "vue-router";
 import { useAuthStore } from "../stores/auth.store";
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
+import CategoriesView from '../views/CategoriesView.vue'
 
 
 const routes = [
@@ -15,25 +16,14 @@ const routes = [
         name:'register',
         component:RegisterView,
     },
-    //{
-        //path:'/',
-        //redirect:'/transactions',
-        //meta:{requireAuth:true},
-        //children:[
-            //{
-            //path:'transactions',
-            //name:'transactions',
-            //component:TransactionsView,
-            //meta:{requireAuth:true},
-            //},
-            //{
-            //path:'categories',
-            //name:'categories',
-            //component:CategoriesView,
-            //meta:{requireAuth:true},
-            //},
-        //]
-    //}
+    {
+        path:'/categories',
+        name:'categories',
+        component:CategoriesView,
+        meta:{requireAuth:true},
+    },
+        
+    
 ]
 
 const router = createRouter({
