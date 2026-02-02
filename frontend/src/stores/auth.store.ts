@@ -4,12 +4,12 @@ import type { LoginRequest,RegisterRequest,User } from '../types/auth';
 import { logginApi, registerApi } from '../api/auth.api';
 import { useToast } from 'vue-toastification';
 
-const toast = useToast();
 export const useAuthStore = defineStore('auth', () => {
+    const toast = useToast();
     const token = ref<string|null>(null)
     const user = ref<User|null>(null)
 
-    const isLoggedIn = computed(()=>!!user.value)
+    const isLoggedIn = computed(()=>!!token.value && !!user.value)
 
     function init(){
         const t = localStorage.getItem('token')
@@ -32,7 +32,7 @@ export const useAuthStore = defineStore('auth', () => {
             localStorage.setItem('user',JSON.stringify(user.value));
             toast.success('Welcome back')
         }catch (err) {
-            toast.error('Invalid username or password')
+            toast.error('Login failed, please try again')
             throw err
         }
     }
@@ -57,7 +57,8 @@ export const useAuthStore = defineStore('auth', () => {
     function logout(){
         token.value = null
         user.value = null
-        localStorage.clear()
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
         toast.info('Logged out')
     }
 
