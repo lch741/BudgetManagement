@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref,onMounted } from 'vue';
-import { createCategory, deleteCategory, getCategories } from '../api/category.api';
+import { createCategory, deleteCategory, getCategories, updateCategory } from '../api/category.api';
 import type {Category} from '../types/category'
 import { useToast } from 'vue-toastification';
 
 const categories = ref<Category[]>([])
-const newName = ref("")
+const newName = ref('')
 const toast = useToast()
+const editingId = ref<number|null>(null)
+const editingName = ref('')
 
 async function fetchCategories() {
   const res = await getCategories();
@@ -26,6 +28,10 @@ async function handleCreate(){
 }
 
 async function handleDelete(id: number) {
+  if(!editingName.value.trim){
+    toast.warning('Category name cannot be empty')
+    return
+  }
   try {
     await deleteCategory(id)
     toast.success('Deleted')
@@ -36,6 +42,27 @@ async function handleDelete(id: number) {
   }
 }
 
+async function handleUpdate(id: number) {
+  try {
+    await updateCategory(id,editingName.value)
+    toast.success('Category updated')
+    await fetchCategories()
+    cancelEdit()
+  } catch (err) {
+    toast.error('Updated failed')
+    throw err
+  }
+}
+
+function startEdit(cat:{id:number;name:string}){
+  editingId.value = cat.id
+  editingName.value = cat.name
+}
+
+function cancelEdit(){
+  editingId.value = null
+  editingName.value = ''
+}
 
 onMounted(fetchCategories)
 </script>
@@ -60,9 +87,20 @@ onMounted(fetchCategories)
         </div>
 
         <ul>
-          <li v-for="cat in categories"::key="cat.id" class="px-4 py-2 border-b">
-            <span>{{ cat.name }}</span>
-            <button @click="handleDelete(cat.id)" class="text-red-500 hover:underline">Delete</button>
+          <li v-for="cat in categories":key="cat.id" class="px-4 py-2 border-b flex items-center">
+            <template v-if="editingId !== cat.id">
+              <span class="flex-1">{{ cat.name }}</span>
+              <button @click="startEdit(cat)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 ml-auto">Edit</button>
+              <button @click="handleDelete(cat.id)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 ml-auto">Delete</button>
+            </template>
+            <template v-else>
+              <input 
+                v-model="editingName" 
+                class="flex-1 border rounded px-3 py-2"
+              />
+              <button @click="handleUpdate(cat.id)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 ml-auto">Save</button>
+              <button @click="cancelEdit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 ml-auto">Cancel</button>
+            </template>
           </li>
         </ul>
 
