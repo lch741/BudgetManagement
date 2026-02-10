@@ -19,6 +19,6 @@ export function createTransaction(Transaction:CreateTransaction){
     return api.post('/Transaction',{Transaction})
 }
 
-export function updateCategory(id:number,Transaction:CreateTransaction){
+export function updateTransaction(id:number,Transaction:CreateTransaction){
     return api.put(`/Transaction/${id}`,{Transaction})
 }
