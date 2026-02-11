@@ -11,8 +11,13 @@ const editingId = ref<number|null>(null)
 const editingName = ref('')
 
 async function fetchCategories() {
-  const res = await getCategories();
-  categories.value = res.data;
+  try{
+    const res = await getCategories();
+    categories.value = res.data;
+  }catch(err){
+    toast.error('Failed to load categories')
+    throw err
+  }
 }
 
 async function handleCreate(){
