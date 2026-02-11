@@ -21,8 +21,12 @@ async function fetchCategories() {
 }
 
 async function handleCreate(){
+  if (newName.value.trim()==='') {
+    toast.warning('Please fill name')
+    return
+  }
   try{
-    await createCategory(newName.value)
+     await createCategory(newName.value)
      toast.success('Category created')
      await fetchCategories()
      newName.value = ''
