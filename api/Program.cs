@@ -115,6 +115,8 @@ app.UseCors( x => x
     .AllowCredentials()
     .SetIsOriginAllowed(origin => true)
 );
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 await app.RunAsync();
 
