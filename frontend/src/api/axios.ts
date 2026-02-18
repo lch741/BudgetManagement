@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useToast } from "vue-toastification"; 
 import { useAuthStore } from "../stores/auth.store";
+import router from "../router/router";
 
 const api = axios.create({
   baseURL: 'http://localhost:5067/api',
@@ -19,30 +20,24 @@ api.interceptors.request.use((config) => {
     return config
 })
 
-api.interceptors.request.use(
-    res => res,
-    error => {
-      const err = error.response
-      if(!err){
-        toast.error('Network error')
-      }else if(Array.isArray(err.data?.errors)){
-        err.data.errors.forEach((e:any) => {
-          toast.warning(e.description)
-        })
-      }else if(typeof err.data?.errors === 'object'){
-        Object.values(err.data.errors).forEach((e:any) => {
-          toast.warning(e[0])
-        })
-      }else if(err.status === 401){
-        toast.warning('Please login')
-        window.location.href = '/login'
-      }else if(err.data?.message){
-        toast.warning(err.data.message)
-      }else if (err) {
-        toast.warning(err?.data);
-      }
-      return Promise.reject(error);
+api.interceptors.response.use(
+  res => res,
+  error => {
+    const auth = useAuthStore();
+    const err = error.response;
+
+    if (!err) {
+      toast.error('Network error');
+    } else if (err.status === 401) {
+      toast.warning('Session expired, please login again');
+      auth.logout();
+      router.push('/login');
+    } else if (err.data?.message) {
+      toast.warning(err.data.message);
+    }
+
+    return Promise.reject(error);
   }
-)
+);
 
 export default api;
