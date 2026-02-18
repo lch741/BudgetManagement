@@ -29,8 +29,10 @@ const routes = [
         component:TransactionsView,
         meta:{requireAuth:true},
     },
-        
-    
+    {
+        path:'/',
+        redirect:'/transactions'
+    }
 ]
 
 const router = createRouter({
