@@ -15,6 +15,7 @@ async function fetchCategories() {
     const res = await getCategories();
     categories.value = res.data;
   }catch(err){
+    console.error(err)
     toast.error('Failed to load categories')
     throw err
   }
@@ -31,6 +32,7 @@ async function handleCreate(){
      await fetchCategories()
      newName.value = ''
   }catch(err){
+    console.error(err)
     toast.error('Create failed')
     throw err
   }
@@ -46,6 +48,7 @@ async function handleDelete(id: number) {
     toast.success('Deleted')
     await fetchCategories()
   } catch (err) {
+    console.error(err)
     toast.error('Delete failed')
     throw err
   }
@@ -58,6 +61,7 @@ async function handleUpdate(id: number) {
     await fetchCategories()
     cancelEdit()
   } catch (err) {
+    console.error(err)
     toast.error('Updated failed')
     throw err
   }

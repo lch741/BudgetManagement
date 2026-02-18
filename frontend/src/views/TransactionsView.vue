@@ -19,6 +19,7 @@ try{
   const res = await getTransactions();
   transactions.value = res.data;
 }catch(err){
+    console.error(err)
     toast.error('Failed to load transactions')
     throw err
   }
@@ -34,6 +35,7 @@ async function handleDelete(id: number) {
     toast.success('Deleted')
     await fetchTransactions()
   } catch (err) {
+    console.error(err)
     toast.error('Delete failed')
     throw err
   }
@@ -46,7 +48,7 @@ async function handleCreate(){
   }
   try{
      await createTransaction(form.value)
-     toast.success('Category created')
+     toast.success('Transaction created')
      await fetchTransactions()
      form.value.name = ''
      form.value.date = ''
@@ -54,6 +56,7 @@ async function handleCreate(){
      form.value.categoryId = 1
      form.value.transactionType = 1
   }catch(err){
+    console.error(err)
     toast.error('Create failed')
     throw err
   }
