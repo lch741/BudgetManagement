@@ -3,8 +3,13 @@ import { ref,onMounted } from 'vue';
 import { getTransactions, getTransactionById, deleteTransaction, createTransaction,updateTransaction } from '../api/transaction.api';
 import type { Transaction,CreateTransaction,TransactionQuery } from "../types/transaction";
 import { useToast } from 'vue-toastification';
+import type { Category } from '../types/category';
+import { getCategories } from '../api/category.api';
+
 
 const transactions = ref<Transaction[]>([])
+const selectedCategoryId = ref<Category|null>(null)
+const categories = ref<Category[]>([])
 const toast = useToast()
 const form = ref<CreateTransaction>({
   name:'',
@@ -14,13 +19,15 @@ const form = ref<CreateTransaction>({
   transactionType: 1,
 })
 
-async function fetchTransactions() {
+async function fetchTransactionsAndCategories() {
 try{
   const res = await getTransactions();
   transactions.value = res.data;
+  const catRes = await getCategories();
+  categories.value = catRes.data;
 }catch(err){
     console.error(err)
-    toast.error('Failed to load transactions')
+    toast.error('Failed to load transactions or categories')
     throw err
   }
 }
@@ -33,7 +40,7 @@ async function handleDelete(id: number) {
   try {
     await deleteTransaction(id)
     toast.success('Deleted')
-    await fetchTransactions()
+    await fetchTransactionsAndCategories()
   } catch (err) {
     console.error(err)
     toast.error('Delete failed')
@@ -49,7 +56,7 @@ async function handleCreate(){
   try{
      await createTransaction(form.value)
      toast.success('Transaction created')
-     await fetchTransactions()
+     await fetchTransactionsAndCategories()
      form.value.name = ''
      form.value.date = ''
      form.value.amount = 0
@@ -62,7 +69,7 @@ async function handleCreate(){
   }
 }
 
-onMounted(fetchTransactions)
+onMounted(fetchTransactionsAndCategories)
 </script>
 
  
@@ -89,6 +96,16 @@ onMounted(fetchTransactions)
             placeholder="Amount"
             class="h-10 w-full rounded border border-gray-300 px-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
           />
+
+          <select
+            v-model="selectedCategoryId"
+            class="h-10 w-full rounded border border-gray-300 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
+          >
+            <option disabled value="">Select Category</option>
+            <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+              {{ cat.name }}
+            </option>
+          </select>
 
           <select
             v-model="form.transactionType"
