@@ -5,10 +5,11 @@ import type { Transaction,CreateTransaction,TransactionQuery } from "../types/tr
 import { useToast } from 'vue-toastification';
 import type { Category } from '../types/category';
 import { getCategories } from '../api/category.api';
+import { useRouter } from 'vue-router'
 
-
+const router = useRouter()
 const transactions = ref<Transaction[]>([])
-const selectedCategoryId = ref<Category|null>(null)
+const selectedCategoryId = ref<number|null>(null)
 const categories = ref<Category[]>([])
 const toast = useToast()
 const form = ref<CreateTransaction>({
@@ -18,10 +19,51 @@ const form = ref<CreateTransaction>({
   categoryId: 1,
   transactionType: 1,
 })
+const query = ref<TransactionQuery>({
+  name: '',
+  transactionType: undefined,
+  categoryId: undefined,
+  startDate: '',
+  endDate: '',
+  minAmount: undefined,
+  maxAmount: undefined,
+  isDescendingByDate: undefined,
+  isDescendingByAmount: undefined
+})
+
+function goToCategories(){
+  router.push('/categories')
+}
+
+function resetQuery(){
+  query.value = {
+    name: '',
+    transactionType: undefined,
+    categoryId: undefined,
+    startDate: '',
+    endDate: '',
+    minAmount: undefined,
+    maxAmount: undefined,
+    isDescendingByDate: undefined,
+    isDescendingByAmount: undefined
+  }
+  fetchTransactionsAndCategories()
+}
+
+function cleanQuery(query: TransactionQuery) {
+  const result: any = {}
+
+  Object.entries(query).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      result[key] = value
+    }
+  })
+  return result
+}
 
 async function fetchTransactionsAndCategories() {
 try{
-  const res = await getTransactions();
+  const res = await getTransactions(cleanQuery(query.value));
   transactions.value = res.data;
   const catRes = await getCategories();
   categories.value = catRes.data;
@@ -119,7 +161,7 @@ onMounted(fetchTransactionsAndCategories)
             @click="handleCreate"
             class="h-10 w-full rounded bg-blue-600 px-4 text-white hover:bg-blue-700"
           >
-            Add Transaction
+            Add
           </button>
         </div>
 
