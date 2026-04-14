@@ -16,9 +16,9 @@ export function deleteTransaction(id:number){
 }
 
 export function createTransaction(Transaction:CreateTransaction){
-    return api.post('/Transaction',{Transaction})
+    return api.post('/Transaction',Transaction)
 }
 
 export function updateTransaction(id:number,Transaction:CreateTransaction){
-    return api.put(`/Transaction/${id}`,{Transaction})
+    return api.put(`/Transaction/${id}`,Transaction)
 }

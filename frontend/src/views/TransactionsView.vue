@@ -9,7 +9,6 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const transactions = ref<Transaction[]>([])
-const selectedCategoryId = ref<number|null>(null)
 const categories = ref<Category[]>([])
 const toast = useToast()
 const form = ref<CreateTransaction>({
@@ -118,7 +117,60 @@ onMounted(fetchTransactionsAndCategories)
 <template>
   <div class="min-h-screen bg-gray-100 p-6">
     <div class="max-w-4xl mx-auto">
-      <h1 class="text-2xl font-bold mb-6 text-center">Transactions</h1>
+        <div class="mb-6 flex items-center justify-between">
+          <h1 class="text-2xl font-bold">Transactions</h1>
+            <button
+              @click="goToCategories"
+              class="rounded bg-emerald-600 px-3 py-2 text-white hover:bg-emerald-700"
+            >
+              Manage Categories
+            </button>
+        </div>
+
+        <div class="bg-white p-4 rounded shadow mb-6 grid grid-cols-4 gap-3">
+
+          <input v-model="query.name" placeholder="Search name"
+            class="border rounded px-2 py-1" />
+
+          <select v-model="query.transactionType" class="border rounded px-2 py-1">
+            <option :value="null">All</option>
+            <option :value="1">Income</option>
+            <option :value="2">Expense</option>
+          </select>
+
+          <select v-model="query.categoryId" class="border rounded px-2 py-1">
+            <option :value="null">All Categories</option>
+            <option v-for="c in categories" :key="c.id" :value="c.id">
+              {{ c.name }}
+            </option>
+          </select>
+
+          <input type="date" v-model="query.startDate" class="border rounded px-2 py-1" />
+          <input type="date" v-model="query.endDate" class="border rounded px-2 py-1" />
+
+          <input type="number" v-model.number="query.minAmount" placeholder="Min"
+            class="border rounded px-2 py-1" />
+
+          <input type="number" v-model.number="query.maxAmount" placeholder="Max"
+            class="border rounded px-2 py-1" />
+
+          <select v-model="query.isDescendingByDate" class="border rounded px-2 py-1">
+            <option :value="null">Date Default</option>
+            <option :value="true">Newest</option>
+            <option :value="false">Oldest</option>
+          </select>
+
+          <button @click="fetchTransactionsAndCategories"
+            class="bg-blue-600 text-white rounded px-3 py-1">
+            Apply
+          </button>
+
+          <button @click="resetQuery"
+            class="bg-gray-300 rounded px-3 py-1">
+            Reset
+          </button>
+
+        </div>
 
         <div class="bg-white p-4 rounded shadow mb-6 flex flex-row items-stretch gap-3">
           <input
@@ -140,7 +192,7 @@ onMounted(fetchTransactionsAndCategories)
           />
 
           <select
-            v-model="selectedCategoryId"
+            v-model="form.categoryId"
             class="h-10 w-full rounded border border-gray-300 bg-white px-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
           >
             <option disabled value="">Select Category</option>
