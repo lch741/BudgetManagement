@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref,onMounted } from 'vue';
-import { getTransactions, getTransactionById, deleteTransaction, createTransaction,updateTransaction } from '../api/transaction.api';
+import { getTransactions, deleteTransaction, createTransaction,updateTransaction } from '../api/transaction.api';
 import type { Transaction,CreateTransaction,TransactionQuery } from "../types/transaction";
 import { useToast } from 'vue-toastification';
 import type { Category } from '../types/category';
@@ -85,6 +85,50 @@ async function handleDelete(id: number) {
   } catch (err) {
     console.error(err)
     toast.error('Delete failed')
+    throw err
+  }
+}
+
+const editingId = ref<number | null>(null)
+const editingForm = ref<CreateTransaction>({
+  name: '',
+  date: '',
+  amount: 0,
+  categoryId: 1,
+  transactionType: 1,
+})
+
+function startEdit(t: Transaction) {
+  editingId.value = t.id
+  editingForm.value = {
+    name: t.name,
+    date: t.date,
+    amount: t.amount,
+    categoryId: t.categoryId,
+    transactionType: t.transactionType
+  }
+}
+
+function cancelEdit() {
+  editingId.value = null
+  editingForm.value = {
+    name: '',
+    date: '',
+    amount: 0,
+    categoryId: 1,
+    transactionType: 1,
+  }
+}
+
+async function handleUpdate(id: number) {
+  try {
+    await updateTransaction(id, editingForm.value)
+    toast.success('Transaction updated')
+    await fetchTransactionsAndCategories()
+    cancelEdit()
+  } catch (err) {
+    console.error(err)
+    toast.error('Update failed')
     throw err
   }
 }
@@ -222,24 +266,59 @@ onMounted(fetchTransactionsAndCategories)
             <li
               v-for="t in transactions"
               :key="t.id"
-              class="px-4 py-2 border-b flex items-center"
+              class="px-4 py-4 border-b flex items-start gap-4"
             >
-              <div>
-                <div class="font-medium">{{ t.name }}</div>
-                <div class="text-sm text-gray-500">
-                  {{ t.date }} · {{ t.categoryName }} ·
-                  <span :class="t.transactionType === 1 ? 'text-green-600' : 'text-red-600'">
-                    {{ t.transactionType === 1 ? '+' : '-' }}{{ t.amount }}
-                  </span>
+              <template v-if="editingId !== t.id">
+                <div class="min-w-0 flex-1">
+                  <div class="text-lg font-semibold">{{ t.name }}</div>
+                  <div class="mt-1 flex flex-wrap items-center gap-2 text-base text-gray-600">
+                    <span>{{ t.date }}</span>
+                    <span class="text-gray-400">·</span>
+                    <span>{{ t.categoryName }}</span>
+                    <span class="text-gray-400">·</span>
+                    <span :class="t.transactionType === 1 ? 'text-green-600' : 'text-red-600'">
+                      {{ t.transactionType === 1 ? '+' : '-' }}{{ t.amount }}
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              <button
-                class="ml-auto text-red-600 hover:text-red-800 text-sm"
-                @click="handleDelete(t.id)"
-              >
-                Delete
-              </button>
+                <button @click="startEdit(t)" class="bg-green-500 text-white px-4 py-2 rounded">
+                  Edit
+                </button>
+                <button @click="handleDelete(t.id)" class="bg-red-500 text-white px-4 py-2 rounded">
+                  Delete
+                </button>
+              </template>
+
+              <template v-else>
+                <div class="w-full flex-1 space-y-3">
+                  <div class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-4">
+                    <input v-model="editingForm.name" placeholder="Name" class="w-full border rounded px-3 py-2" />
+                    <input v-model="editingForm.date" type="date" class="w-full border rounded px-3 py-2" />
+                    <input v-model.number="editingForm.amount" type="number" placeholder="Amount" class="w-full border rounded px-3 py-2" />
+
+                    <select v-model="editingForm.categoryId" class="w-full border rounded px-3 py-2">
+                      <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+                        {{ cat.name }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="flex gap-2">
+                    <select v-model="editingForm.transactionType" class="w-full border rounded px-3 py-2">
+                      <option :value="1">Income</option>
+                      <option :value="2">Expense</option>
+                    </select>
+
+                    <button @click="handleUpdate(t.id)" class="shrink-0 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                      Save
+                    </button>
+                    <button @click="cancelEdit" class="shrink-0 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </template>
             </li>
           </ul>
 

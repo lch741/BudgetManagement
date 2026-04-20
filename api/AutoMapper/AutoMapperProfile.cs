@@ -14,7 +14,10 @@ namespace api.AutoMapper
         public AutoMapperProfile(){
             CreateMap<Category, CategoryDto>();
             CreateMap<CreateCategoryDto, Category>();
-            CreateMap<Transaction, TransactionDto>().ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
+            CreateMap<Transaction, TransactionDto>()
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("yyyy-MM-dd")))
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+                .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId));
             CreateMap<CreateTransactionDto, Transaction>().ForMember(dest => dest.AppUser, opt => opt.Ignore());
         }
     }

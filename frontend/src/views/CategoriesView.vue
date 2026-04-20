@@ -3,6 +3,7 @@ import { ref,onMounted } from 'vue';
 import { createCategory, deleteCategory, getCategories, updateCategory } from '../api/category.api';
 import type {Category} from '../types/category'
 import { useToast } from 'vue-toastification';
+import router from '../router/router';
 
 const categories = ref<Category[]>([])
 const newName = ref('')
@@ -19,6 +20,10 @@ async function fetchCategories() {
     toast.error('Failed to load categories')
     throw err
   }
+}
+
+function goToTransactions(){
+  router.push('/transactions')
 }
 
 async function handleCreate(){
@@ -83,7 +88,15 @@ onMounted(fetchCategories)
 <template>
   <div class="min-h-screen bg-gray-100 p-6">
     <div class="max-w-3xl mx-auto">
-        <h1 class="text-2xl font-bold mb-6">Categories</h1>
+        <div class="mb-6 flex items-center justify-between">
+          <h1 class="text-2xl font-bold">Categories</h1>
+            <button
+              @click="goToTransactions"
+              class="rounded bg-emerald-600 px-3 py-2 text-white hover:bg-emerald-700"
+            >
+              Manage Transactions
+            </button>
+        </div>
       <div class="bg-white rounded shadow mb-4">
         <div class="flex gap-2">
           <input 

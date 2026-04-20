@@ -12,6 +12,7 @@ namespace api.Dtos.Transaction
         public required string Name { get; set; }
         public required string Date { get; set; }
         public required decimal Amount { get; set; }
+        public int CategoryId { get; set; }
         public required string CategoryName { get; set; }
         public TransactionType TransactionType { get; set; }
     }
